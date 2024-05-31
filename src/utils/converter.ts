@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Collection } from 'mongodb';
-import { RpcTX } from '../interfaces/converter.intreface';
+import { BlockHead, RpcBlock, RpcTX } from '../interfaces/converter.intreface';
 
 /**
  * Function gets next block hash
@@ -31,7 +31,7 @@ export async function get_block_hash(url: string, lblock: number): Promise<strin
  * blocks from the blockchain.
  * @returns The `get_block` function is returning a Promise that resolves to a `RpcTX` object.
  */
-export async function get_block(url: string, hash: string): Promise<RpcTX> {
+export async function get_block(url: string, hash: string): Promise<RpcBlock> {
 	try {
 		return (
 			await axios.post(url, { jsonrpc: '2.0', method: 'getblock', params: [hash, 2], id: 1 }).catch(e => {
@@ -55,4 +55,20 @@ export async function get_block(url: string, hash: string): Promise<RpcTX> {
 export async function get_last_block_height(col: Collection): Promise<number> {
         const full_block = await col.findOne({}, { sort: { height: -1 } });
         return full_block !== null ? full_block.height : -1;
+}
+
+/**
+ * The function `block_head_from_rpc_block` extracts specific properties from an RPC block object and
+ * returns a `BlockHead` object.
+ * @param {RpcBlock} rpc_block - RpcBlock object containing block data fetched from an RPC call. It
+ * includes properties like hash, height, version, versionHex, merkleroot, time, nonce, bits,
+ * difficulty, previousblockhash, strippedsize, size, weight and many more.
+ * @returns The function `block_head_from_rpc_block` takes in an `RpcBlock` object and extracts
+ * specific properties from it to create a `BlockHead` object. The extracted properties include `hash`,
+ * `height`, `version`, `versionHex`, `merkleroot`, `time`, `nonce`, `bits`, `difficulty`,
+ * `previousblockhash`, `strippedsize`, `size`,
+ */
+export function block_head_from_rpc_block(rpc_block: RpcBlock): BlockHead {
+        const { hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight } = rpc_block;
+	return {hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight};
 }
