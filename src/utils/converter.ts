@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Collection } from 'mongodb';
-import { BlockHead, RpcBlock, RpcTX, TX } from '../interfaces/converter.intreface';
+import { BlockHead, RpcBlock, RpcTX, TX, vout, script } from '../interfaces/converter.intreface';
+import { crypto, address, networks } from 'bitcoinjs-lib';
 
 /**
  * Function gets next block hash
@@ -106,8 +107,8 @@ export async function insert_block_header(header: BlockHead, blk_col: Collection
  * array of TX objects with selected properties from the RpcTX objects along with additional properties
  * like time, block height, and block hash.
  */
-export function smaller_txs_from_rpc_block(txs: RpcTX[], block_hash: string, block_height: number, timestamp: number): TX[]{
-        return txs.map(RPCtx => ({
+export function smaller_txs_from_rpc_block(txs: RpcTX[], block_hash: string, block_height: number, timestamp: number): TX[] {
+	return txs.map(RPCtx => ({
 		txid: RPCtx.txid,
 		version: RPCtx.version,
 		size: RPCtx.size,
@@ -115,11 +116,11 @@ export function smaller_txs_from_rpc_block(txs: RpcTX[], block_hash: string, blo
 		weight: RPCtx.weight,
 		locktime: RPCtx.locktime,
 		vin: RPCtx.vin,
-		vout: RPCtx.vout,
-                fee: RPCtx.fee,
-                time: timestamp,
-                block_height,
-                blockhash: block_hash
+		vout: add_address_for_vout_array(RPCtx.vout),
+		fee: RPCtx.fee,
+		time: timestamp,
+		block_height,
+		blockhash: block_hash,
 	}));
 }
 
@@ -135,4 +136,50 @@ export async function insert_transactions(txs: TX[], txs_col: Collection): Promi
 	await txs_col.insertMany(txs).catch(err => {
 		throw new Error(err);
 	});
+}
+
+/**
+ * The function `add_address_for_vout_array` adds address information to each element in an array of
+ * vout objects.
+ * @param {vout[]} v - An array of vout objects. Each vout object represents an output of a transaction
+ * and contains properties such as the output index (n), value, and scriptPubKey.
+ * @returns The function `add_address_for_vout_array` is returning an array of `vout` objects where
+ * each object has the properties `n`, `value`, and `scriptPubKey`. The `scriptPubKey` property is
+ * populated by calling the function `add_address_for_single_vout` on each `vout` object in the input
+ * array `v`.
+ */
+function add_address_for_vout_array(v: vout[]): vout[] {
+	return v.map(vo => ({
+		n: vo.n,
+		value: vo.value,
+		scriptPubKey: add_address_for_single_vout(vo),
+	}));
+}
+
+/**
+ * The function `add_address_for_single_vout` takes a vout object, extracts the address from its
+ * scriptPubKey if it is of type 'pubkey', and returns the updated scriptPubKey.
+ * @param {vout} v - v is an object representing a single transaction output (vout) in a blockchain
+ * transaction. It contains information about the scriptPubKey, which is the locking script that
+ * determines who can spend the output. The function add_address_for_single_vout takes this vout object
+ * as input and attempts to add an
+ * @returns The function `add_address_for_single_vout` returns the `scriptPubKey` object with an added
+ * `address` property if the `scriptPubKey` type is 'pubkey'. If the `scriptPubKey` type is not
+ * 'pubkey', it returns the original `scriptPubKey` object.
+ */
+function add_address_for_single_vout(v: vout): script {
+	try {
+		if (v.scriptPubKey.type === 'pubkey') {
+			const asm = Buffer.from(v.scriptPubKey.asm, 'hex');
+			const sha = crypto.sha256(asm);
+			const ripemd160 = crypto.ripemd160(sha);
+			const base58_address = address.toBase58Check(ripemd160, networks.bitcoin.pubKeyHash);
+			v.scriptPubKey.address = base58_address;
+			return v.scriptPubKey;
+		} else {
+			return v.scriptPubKey;
+		}
+	} catch (e) {
+		throw new Error(`Cannot convert address. ${e}`);
+	}
 }
