@@ -1,3 +1,6 @@
+/**
+ * Block head in database.
+ */
 export interface BlockHead {
 	hash: string;
 	height: number;
@@ -14,6 +17,12 @@ export interface BlockHead {
 	weight: number;
 }
 
+/**
+ * Final version of tx in db. After using tools its gonna have new field vinout 
+ * which contain vouts for vins.
+ * 
+ * blockhash, block_height and time is added after transforming RPC txs from block.
+ */
 export interface TX {
 	txid: string;
 	version: number;
@@ -29,6 +38,9 @@ export interface TX {
 	fee?: number;
 }
 
+/**
+ * VINS for tx same as from RPC
+ */
 export interface vin {
 	coinbase?: string;
 	sequence: number;
@@ -37,16 +49,26 @@ export interface vin {
         scriptSig?: ScriptSig;
 }
 
+/**
+ * ScriptSig same like RPC script
+ */
 export interface ScriptSig {
         asm: string;
         hex: string;
 }
+
+/**
+ * tx vout same as RPC vout
+ */
 export interface vout {
 	value: number;
 	n: number;
 	scriptPubKey: script;
 }
 
+/**
+ * vout script 
+ */
 export interface script {
 	asm: string;
 	desc?: string;
@@ -55,6 +77,9 @@ export interface script {
 	address?: string;
 }
 
+/**
+ * Block data from btc RPC channel.
+ */
 export interface RpcBlock {
 	hash: string;
 	confirmations: number;
@@ -77,6 +102,11 @@ export interface RpcBlock {
 	tx: RpcTX[];
 }
 
+/**
+ * Transaction from BTC RPC channel.
+ * 
+ * Included in block querry
+ */
 export interface RpcTX {
         txid: string;
         hash: string;
