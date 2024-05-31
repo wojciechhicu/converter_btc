@@ -1,7 +1,25 @@
 import { MongoClient } from 'mongodb';
 import { get_block_hash, get_block, get_last_block_height, block_head_from_rpc_block, insert_block_header, smaller_txs_from_rpc_block, insert_transactions } from './utils/converter';
 import { env } from './env';
+import readline from 'readline';
 
+// stop flag to stop the process
+let stop = false;
+
+
+// Code to stop process after writing 'stop' in console
+const rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout,
+});
+
+rl.write("To stop process write 'stop' in the console \n");
+rl.on('line', input => {
+	if (input.trim().toLowerCase() === 'stop') {
+		stop = true;
+		rl.close();
+	}
+});
 
 /*`const connection_string = `${env.mongo.type}://${env.mongo.host}:${env.mongo.port}`;` is
 creating a connection string for MongoDB. This string will be used to connect to the MongoDB database
@@ -16,7 +34,7 @@ const url = `http://${env.rpc.username}:${env.rpc.password}@${env.rpc.host}:${en
 main_converter();
 
 async function main_converter() {
-        try {
+	try {
 		// creating connection to MongoDB
 		await client.connect();
 
@@ -27,22 +45,25 @@ async function main_converter() {
 		const block_collection = db.collection(env.mongo.collections.blocks);
 		const transaction_collection = db.collection(env.mongo.collections.transactions);
 
-		const last_block_height = await get_last_block_height(block_collection);
-		const next_block_hash = await get_block_hash(url, last_block_height);
-		const next_block = await get_block(url, next_block_hash);
-		let blk_head = block_head_from_rpc_block(next_block);
+                // when you write 'stop' in the console, process will stop after finishing last task
+		while (!stop) {
+			const last_block_height = await get_last_block_height(block_collection);
+			const next_block_hash = await get_block_hash(url, last_block_height);
+			const next_block = await get_block(url, next_block_hash);
+			let blk_head = block_head_from_rpc_block(next_block);
 
-		// Swapping seconds format timestamp to milliseconds timestamp
-		blk_head.time *= 1000;
+			// Swapping seconds format timestamp to milliseconds timestamp
+			blk_head.time *= 1000;
 
-		const transformed_txs = smaller_txs_from_rpc_block(next_block.tx, blk_head.hash, blk_head.height, blk_head.time);
+			const transformed_txs = smaller_txs_from_rpc_block(next_block.tx, blk_head.hash, blk_head.height, blk_head.time);
 
-		/**
-		 * Inserting block headers to MongoDB block collection
-		 * Inserting transactions to MongoDB transactions collection
-		 */
-		await insert_block_header(blk_head, block_collection);
-		await insert_transactions(transformed_txs, transaction_collection);
+			/**
+			 * Inserting block headers to MongoDB block collection
+			 * Inserting transactions to MongoDB transactions collection
+			 */
+			await insert_block_header(blk_head, block_collection);
+			await insert_transactions(transformed_txs, transaction_collection);
+		}
 	} catch (e: any) {
 		await client.close();
 		throw new Error(e);
