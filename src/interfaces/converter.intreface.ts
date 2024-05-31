@@ -23,11 +23,10 @@ export interface TX {
 	locktime: number;
 	vin: vin[];
 	vout: vout[];
-	vinOut?: vout[];
 	blockhash: string;
 	block_height: number;
 	time: number;
-	fee: number;
+	fee?: number;
 }
 
 export interface vin {

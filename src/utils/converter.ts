@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Collection } from 'mongodb';
-import { BlockHead, RpcBlock, RpcTX } from '../interfaces/converter.intreface';
+import { BlockHead, RpcBlock, RpcTX, TX } from '../interfaces/converter.intreface';
 
 /**
  * Function gets next block hash
@@ -12,13 +12,15 @@ import { BlockHead, RpcBlock, RpcTX } from '../interfaces/converter.intreface';
  * @returns The function `get_block_hash` is returning a Promise that resolves to a string corresponding to next block
  */
 export async function get_block_hash(url: string, lblock: number): Promise<string> {
-        try {
-                return await (await axios.post(url, { jsonrpc: '2.0', method: 'getblockhash', params: [lblock + 1], id: 1 }).catch((e) => {
-                        throw new Error(`Canot get block hash: ${e}`);
-                })).data.result;
-        } catch (e) {
-                throw new Error(`Canot get block hash: ${e}`);
-        }
+	try {
+		return await (
+			await axios.post(url, { jsonrpc: '2.0', method: 'getblockhash', params: [lblock + 1], id: 1 }).catch(e => {
+				throw new Error(`Canot get block hash: ${e}`);
+			})
+		).data.result;
+	} catch (e) {
+		throw new Error(`Canot get block hash: ${e}`);
+	}
 }
 
 /**
@@ -53,8 +55,8 @@ export async function get_block(url: string, hash: string): Promise<RpcBlock> {
  * `col`. If there are no blocks in the collection, it returns -1.
  */
 export async function get_last_block_height(col: Collection): Promise<number> {
-        const full_block = await col.findOne({}, { sort: { height: -1 } });
-        return full_block !== null ? full_block.height : -1;
+	const full_block = await col.findOne({}, { sort: { height: -1 } });
+	return full_block !== null ? full_block.height : -1;
 }
 
 /**
@@ -69,6 +71,68 @@ export async function get_last_block_height(col: Collection): Promise<number> {
  * `previousblockhash`, `strippedsize`, `size`,
  */
 export function block_head_from_rpc_block(rpc_block: RpcBlock): BlockHead {
-        const { hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight } = rpc_block;
-	return {hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight};
+	const { hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight } = rpc_block;
+	return { hash, height, version, versionHex, merkleroot, time, nonce, bits, difficulty, previousblockhash, strippedsize, size, weight };
+}
+
+/**
+ * The function `insert_block_header` inserts a block header into a collection asynchronously to MongoDB blocks collection.
+ * @param {BlockHead} header - The `header` parameter is of type `BlockHead`, which contains
+ * information about a block header in a BTC blockchain.
+ * @param {Collection} blk_col - The `blk_col` parameter is a MongoDB collection where the `header`
+ * object will be inserted.
+ */
+export async function insert_block_header(header: BlockHead, blk_col: Collection): Promise<void> {
+	await blk_col.insertOne(header).catch(err => {
+		throw new Error(err);
+	});
+}
+
+/**
+ * The function `smaller_txs_from_rpc_block` takes an array of RpcTX objects, a block hash, block
+ * height, and timestamp, and returns an array of TX objects with selected properties.
+ * @param {RpcTX[]} txs - The `txs` parameter is an array of objects representing transactions in RPC
+ * channel format.
+ * @param {string} block_hash - The `block_hash` parameter is a string representing the hash of a block
+ * in a blockchain. It uniquely identifies a specific block within the blockchain network. Added from block for faster searching.
+ * @param {number} block_height - The `block_height` parameter represents the height of the block in
+ * the blockchain. It is a numerical value that indicates the position of the block within the
+ * blockchain.
+ * @param {number} timestamp - The `timestamp` parameter represents the time at which the block was
+ * mined or the transaction occurred. It is a Unix timestamp, which is a way to represent time as the
+ * number of miliseconds that have elapsed since January 1, 1970, UTC.
+ * @returns The function `smaller_txs_from_rpc_block` takes an array of RpcTX objects, a block hash,
+ * block height, and timestamp as input parameters. It then maps over the RpcTX array and returns a new
+ * array of TX objects with selected properties from the RpcTX objects along with additional properties
+ * like time, block height, and block hash.
+ */
+export function smaller_txs_from_rpc_block(txs: RpcTX[], block_hash: string, block_height: number, timestamp: number): TX[]{
+        return txs.map(RPCtx => ({
+		txid: RPCtx.txid,
+		version: RPCtx.version,
+		size: RPCtx.size,
+		vsize: RPCtx.vsize,
+		weight: RPCtx.weight,
+		locktime: RPCtx.locktime,
+		vin: RPCtx.vin,
+		vout: RPCtx.vout,
+                fee: RPCtx.fee,
+                time: timestamp,
+                block_height,
+                blockhash: block_hash
+	}));
+}
+
+/**
+ * Function inserts an array of transactions into a transaction collection in a MongoDB
+ * database.
+ * @param {TX[]} txs - The `txs` parameter is an array of transactions (`TX[]`) that you want to insert
+ * into a collection.
+ * @param {Collection} txs_col - The `txs_col` parameter is a MongoDB collection where you want to
+ * insert the array of transactions (`txs`).
+ */
+export async function insert_transactions(txs: TX[], txs_col: Collection): Promise<void> {
+	await txs_col.insertMany(txs).catch(err => {
+		throw new Error(err);
+	});
 }
