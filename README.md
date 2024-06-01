@@ -1,4 +1,5 @@
 # Pixel converter
+
 This application is written in TypeScript for Node.js. It serves the purpose of converting data from the .dat format in the Bitcoin blockchain to JSON format, which is then stored in MongoDB.
 
 ### Key Features
@@ -10,6 +11,7 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 - **Service Registration**: The application can be registered as a service for continuous operation.
 
 ## Can I trust this code?
+
 > Don't trust. Verify.
 
 ## Project Status
@@ -24,11 +26,38 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 
 Before running the application, ensure the following prerequisites are met:
 
-- **Running Bitcoin Node**: A Bitcoin node must be running with the RPC channel enabled and the following settings configured:
+- **Running Bitcoin Node**: A Bitcoin node must be running with the RPC channel enabled and the following settings configured in bitcoin.conf file:
+
+```
 rpcuser=<your_rpc_username>
 rpcpassword=<your_rpc_password>
 server=1
 rpcworkqueue=100
 rpcthreads=4
+```
+
 - **MongoDB Database**: MongoDB version 7 or higher should be installed. While backward compatible, version 7 is optimized for better performance.
-- **Node.js Environment**: Node.js environment is required for running the application.
+  Supports only format:
+
+```
+type: "mongodb",
+host: "127.0.0.1",
+port: 27017,
+database: "bitcoin",
+collections: 
+        {
+		blocks: "blocks",
+		addresses: "addresses",
+		transactions: "transactions"
+	}
+```
+
+- **Node.js Environment**: Node.js environment is required for running the application (v16+).
+
+## Installation
+In root folder run:
+```bash
+npm install 
+#It will install all needed dependencies
+```
+**WARNING**: Tested only in the Windows environment
