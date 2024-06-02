@@ -89,11 +89,27 @@ The application can be used in two ways:
 ## Output Description
 To make smaller blockchain in MongoDB some of the data is not included / changed:
 
-```markdown
-
-| RPC Data | Data for MongoDB |
-|----------|------------------|
-| RpcBlock {
+<table>
+<tr>
+<th align="center">
+<p>
+<small>
+BTC RPC
+</small>
+</p>
+</th>
+<th align="center">
+<p>
+<small>
+MongoDB
+</small>
+</p>
+</th>
+</tr>
+<tr>
+<td>
+```
+ RpcBlock {
 	hash: string;
 	confirmations: number;
 	height: number;
@@ -113,7 +129,14 @@ To make smaller blockchain in MongoDB some of the data is not included / changed
 	nextblockhash: string;
 	weight: number;
 	tx: RpcTX[];
-}| BlockHead {
+}
+```
+</td>
+</tr>
+<tr>
+<td>
+```
+ BlockHead {
 	hash: string;
 	height: number;
 	version: number;
@@ -127,7 +150,14 @@ To make smaller blockchain in MongoDB some of the data is not included / changed
 	strippedsize: number;
 	size: number;
 	weight: number;
-}|
+}
+```
+</td>
+</tr>
+</table>
+```markdown
+
+
 interface RpcTX {
         txid: string;
         hash: string;
@@ -168,4 +198,4 @@ interface script {
 **HONORABLE MENTION**
 This project owes a debt of gratitude to another project that significantly eased its development.
 
-**[ProjectName](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
+**[Bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
