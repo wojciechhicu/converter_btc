@@ -75,18 +75,22 @@ The application can be used in two ways:
 
 ### As Node.js App:
 
-        * Run `npm run build` in root folder. It's gonna start app as Node.js app. To shut down the applications in a safe way, type stop in the console. To exit from app type `ctrl + c`
+        * Run `npm run build` in root folder. It's gonna start app as Node.js app. 
+        To shut down the applications in a safe way, type stop in the console. 
+        To exit from app type `ctrl + c`
 
 ### As service:
 
         * Run `npm run compile` in root folder to compile all files from TS to JS.
         * Run `cd dist/utils` to change folder to service files.
-        * Run `node service-register.js`. This run service. To stop service write `stop` in the console. To exit from app type `ctrl + c`
+        * Run `node service-register.js`. This run service. To stop service write `stop` in the console. 
+        To exit from app type `ctrl + c`
 
 ## Output Description
 To make smaller blockchain in MongoDB some of the data is not included / changed:
 
-- Data from BTC RPC format: 
+```markdown
+
 | RPC Data | Data for MongoDB |
 |----------|------------------|
 | RpcBlock {
@@ -164,4 +168,4 @@ interface script {
 **HONORABLE MENTION**
 This project owes a debt of gratitude to another project that significantly eased its development.
 
-- **[ProjectName](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
+**[ProjectName](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
