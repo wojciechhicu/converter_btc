@@ -110,7 +110,7 @@ MongoDB
 <td>
 
 ```ts
- RpcBlock {
+interface RpcBlock {
 	hash: string;
 	confirmations: number;
 	height: number;
@@ -136,7 +136,7 @@ MongoDB
 <td>
 
 ```ts
- BlockHead {
+interface BlockHead {
 	hash: string;
 	height: number;
 	version: number;
@@ -150,6 +150,118 @@ MongoDB
 	strippedsize: number;
 	size: number;
 	weight: number;
+}
+```
+</td>
+</tr>
+<tr>
+<td>
+
+```ts
+interface RpcTX {
+        txid: string;
+        hash: string;
+	version: number;
+	size: number;
+	vsize: number;
+	weight: number;
+	locktime: number;
+	vin: vin[];
+	vout: vout[];
+        fee?: number;
+        hex: string;
+}
+```
+</td>
+<td>
+
+```ts
+interface TX {
+	txid: string;
+	version: number;
+	size: number;
+	vsize: number;
+	weight: number;
+	locktime: number;
+	vin: vin[];
+	vout: vout[];
+	blockhash: string;
+	block_height: number;
+	time: number;
+	fee?: number;
+}
+```
+</td>
+</tr>
+</tr>
+<tr>
+<td>
+
+```ts
+interface vin {
+	coinbase?: string;
+	sequence: number;
+	txid?: string;
+        vout?: number;
+        scriptSig?: ScriptSig;
+}
+```
+</td>
+<td>
+
+```ts
+interface vin {
+	coinbase?: string;
+	sequence: number;
+	txid?: string;
+        vout?: number;
+        scriptSig?: ScriptSig;
+}
+```
+</td>
+</tr>
+<tr>
+<td>
+
+```ts
+interface ScriptSig {
+        asm: string;
+        hex: string;
+}
+```
+</td>
+<td>
+
+```ts
+interface ScriptSig {
+        asm: string;
+        hex: string;
+}
+```
+</td>
+</tr>
+<tr>
+<td>
+
+```ts
+interface script {
+	asm: string;
+	desc?: string;
+	hex?: string;
+	type: string;
+	address?: string;
+}
+```
+</td>
+<td>
+
+```ts
+interface script {
+	asm: string;
+	desc?: string;
+	hex?: string;
+	type: string;
+	address?: string;
 }
 ```
 </td>
