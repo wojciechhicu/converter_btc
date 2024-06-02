@@ -108,7 +108,8 @@ MongoDB
 </tr>
 <tr>
 <td>
-```
+
+```ts
  RpcBlock {
 	hash: string;
 	confirmations: number;
@@ -132,10 +133,9 @@ MongoDB
 }
 ```
 </td>
-</tr>
-<tr>
 <td>
-```
+
+```ts
  BlockHead {
 	hash: string;
 	height: number;
@@ -155,46 +155,7 @@ MongoDB
 </td>
 </tr>
 </table>
-```markdown
 
-
-interface RpcTX {
-        txid: string;
-        hash: string;
-	version: number;
-	size: number;
-	vsize: number;
-	weight: number;
-	locktime: number;
-	vin: vin[];
-	vout: vout[];
-        fee?: number;
-        hex: string;
-}
-interface vin {
-	coinbase?: string;
-	sequence: number;
-	txid?: string;
-        vout?: number;
-        scriptSig?: ScriptSig;
-}
-interface ScriptSig {
-        asm: string;
-        hex: string;
-}
-interface vout {
-	value: number;
-	n: number;
-	scriptPubKey: script;
-}
-interface script {
-	asm: string;
-	desc?: string;
-	hex?: string;
-	type: string;
-	address?: string;
-}
-```
 **HONORABLE MENTION**
 This project owes a debt of gratitude to another project that significantly eased its development.
 
