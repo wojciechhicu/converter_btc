@@ -18,14 +18,6 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 
 ⚠️ **Work in Progress**: This application is currently under development. While every effort is made to ensure its functionality and reliability, please note that it may contain bugs or incomplete features. Use at your own discretion.
 
-## WARNING: 
-
-Tested only in the Windows environment till block height 300.000
-
-## DOCUMENTATION
-
-📚 **Code Documentation**: As of now, all documentation is embedded within the codebase, providing insights into each function and its usage.
-
 ## REQUIREMENTS
 
 Before running the application, ensure the following prerequisites are met:
@@ -87,6 +79,20 @@ The application can be used in two ways:
         * Run `cd dist/utils` to change folder to service files.
         * Run `node service-register.js`. To stop service write `stop` in the console. 
         To exit from app type `ctrl + c`
+
+## DOCUMENTATION
+
+📚 **Code Documentation**: As of now, all documentation is embedded within the codebase, providing insights into each function and its usage.
+
+## WARNING: 
+
+Tested only in the Windows environment till block height 300.000
+
+## HONORABLE MENTION
+
+This project owes a debt of gratitude to another project that significantly eased its development.
+
+**[Bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
 
 ## INTERFACES
 To make smaller blockchain in MongoDB some of the data is not included / changed as followed:
@@ -232,9 +238,3 @@ interface script {
 </tr>
 </tbody>
 </table>
-
-## HONORABLE MENTION
-
-This project owes a debt of gratitude to another project that significantly eased its development.
-
-**[Bitcoinjs-lib](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
