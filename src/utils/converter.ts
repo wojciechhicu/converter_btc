@@ -12,16 +12,25 @@ import { crypto, address, networks } from 'bitcoinjs-lib';
  * block number for which you want to retrieve the hash + 1.
  * @returns The function `get_block_hash` is returning a Promise that resolves to a string corresponding to next block
  */
-export async function get_block_hash(url: string, lblock: number): Promise<string> {
-	try {
-		return await (
-			await axios.post(url, { jsonrpc: '2.0', method: 'getblockhash', params: [lblock + 1], id: 1 }).catch(e => {
-				throw new Error(`Canot get block hash: ${e}`);
-			})
-		).data.result;
-	} catch (e) {
-		throw new Error(`Canot get block hash: ${e}`);
-	}
+export async function get_block_hash(url: string, lblock: number): Promise<string | null> {
+	//try {
+		const response = await axios.post(url, { jsonrpc: '2.0', method: 'getblockhash', params: [lblock + 1], id: 1 }).catch(rs => {
+			return rs;
+		});
+		const data = response.data;
+		if (data.result !== null) {
+			return data.result;
+		}
+		if (data.error.code == -8 && data.error.message == 'Block height out of range') {
+			return null;
+		}
+		if (data.error.code !== -8 && data.error.message !== 'Block height out of range' && data.result === null) {
+			throw new Error(JSON.stringify(data.error, null, 2));
+		}
+		throw new Error(JSON.stringify(data.error, null, 2));
+	// } catch (e: any) {
+	// 	throw new Error(e);
+	// }
 }
 
 /**

@@ -6,7 +6,6 @@ import readline from 'readline';
 // stop flag to stop the process
 let stop = false;
 
-
 // Code to stop process after writing 'stop' in console
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -45,11 +44,22 @@ async function main_converter() {
 		const block_collection = db.collection(env.mongo.collections.blocks);
 		const transaction_collection = db.collection(env.mongo.collections.transactions);
 
-                // when you write 'stop' in the console, process will stop after finishing last task
+		// when you write 'stop' in the console, process will stop after finishing last task
 		while (!stop) {
+			//console.time('Block parsed in:');
+			//console.log('1');
 			const last_block_height = await get_last_block_height(block_collection);
+			//console.log('2');
 			const next_block_hash = await get_block_hash(url, last_block_height);
+			//console.log('3');
+			if (next_block_hash === null) {
+				console.log('Up to date witch blockchain. Waiting 10 seconds for new block.');
+				await new Promise(resolve => setTimeout(resolve, 10000));
+				continue;
+			}
+			//console.log('4');
 			const next_block = await get_block(url, next_block_hash);
+			//console.log('5');
 			let blk_head = block_head_from_rpc_block(next_block);
 
 			// Swapping seconds format timestamp to milliseconds timestamp
@@ -63,6 +73,8 @@ async function main_converter() {
 			 */
 			await insert_block_header(blk_head, block_collection);
 			await insert_transactions(transformed_txs, transaction_collection);
+
+			//console.log(`New block added to DB: ${blk_head.height}`);
 		}
 	} catch (e: any) {
 		await client.close();

@@ -1,9 +1,10 @@
 {
   "name": "pixel_converter",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compile": "tsc",
     "build": "tsc && node dist/index.js"
   },
   "keywords": [],
@@ -11,8 +12,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.12.13",
+    "@types/node-windows": "^0.1.6",
     "bitcoinjs-lib": "^6.1.5",
     "mongodb": "^6.7.0",
+    "node-windows": "^1.0.0-beta.8",
     "typescript": "^5.4.5"
   },
   "dependencies": {
