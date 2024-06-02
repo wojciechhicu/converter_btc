@@ -89,7 +89,7 @@ The application can be used in two ways:
 ## Output Description
 To make smaller blockchain in MongoDB some of the data is not included / changed:
 
-<table>
+<table align="center" width="100%">
 <tr>
 <th align="center">
 <p>
