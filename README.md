@@ -10,15 +10,12 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 - **MongoDB Integration**: Stores the converted data in a MongoDB database for efficient querying and management.
 - **Service Registration**: The application can be registered as a service for continuous operation.
 
-### Can I trust this code?
-
-> Don't trust. Verify.
-
 ## PROJECT STATUS
 
 ⚠️ **Work in Progress**: This application is currently under development. While every effort is made to ensure its functionality and reliability, please note that it may contain bugs or incomplete features. Use at your own discretion.
 
 ## REQUIREMENTS
+Be aware that BTC blockchain is 570GB+, then in MongoDB will be x3+ more of storage + indexes. RAM usage is high like how much limit you give = this many its consume.
 
 Before running the application, ensure the following prerequisites are met:
 
