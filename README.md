@@ -90,6 +90,7 @@ The application can be used in two ways:
 To make smaller blockchain in MongoDB some of the data is not included / changed:
 
 <table align="center" width="100%">
+<tbody align="center" width="100%">
 <tr>
 <th align="center">
 <p>
@@ -131,6 +132,42 @@ interface RpcBlock {
 	weight: number;
 	tx: RpcTX[];
 }
+interface RpcTX {
+        txid: string;
+        hash: string;
+	version: number;
+	size: number;
+	vsize: number;
+	weight: number;
+	locktime: number;
+	vin: vin[];
+	vout: vout[];
+        fee?: number;
+        hex: string;
+}
+interface vin {
+	coinbase?: string;
+	sequence: number;
+	txid?: string;
+        vout?: number;
+        scriptSig?: ScriptSig;
+}
+interface ScriptSig {
+        asm: string;
+        hex: string;
+}
+interface vout {
+	value: number;
+	n: number;
+	scriptPubKey: script;
+}
+interface script {
+	asm: string;
+	desc?: string;
+	hex?: string;
+	type: string;
+	address?: string;
+}
 ```
 </td>
 <td>
@@ -151,31 +188,6 @@ interface BlockHead {
 	size: number;
 	weight: number;
 }
-```
-</td>
-</tr>
-<tr>
-<td>
-
-```ts
-interface RpcTX {
-        txid: string;
-        hash: string;
-	version: number;
-	size: number;
-	vsize: number;
-	weight: number;
-	locktime: number;
-	vin: vin[];
-	vout: vout[];
-        fee?: number;
-        hex: string;
-}
-```
-</td>
-<td>
-
-```ts
 interface TX {
 	txid: string;
 	version: number;
@@ -190,14 +202,6 @@ interface TX {
 	time: number;
 	fee?: number;
 }
-```
-</td>
-</tr>
-</tr>
-<tr>
-<td>
-
-```ts
 interface vin {
 	coinbase?: string;
 	sequence: number;
@@ -205,57 +209,15 @@ interface vin {
         vout?: number;
         scriptSig?: ScriptSig;
 }
-```
-</td>
-<td>
-
-```ts
-interface vin {
-	coinbase?: string;
-	sequence: number;
-	txid?: string;
-        vout?: number;
-        scriptSig?: ScriptSig;
-}
-```
-</td>
-</tr>
-<tr>
-<td>
-
-```ts
 interface ScriptSig {
         asm: string;
         hex: string;
 }
-```
-</td>
-<td>
-
-```ts
-interface ScriptSig {
-        asm: string;
-        hex: string;
+interface vout {
+	value: number;
+	n: number;
+	scriptPubKey: script;
 }
-```
-</td>
-</tr>
-<tr>
-<td>
-
-```ts
-interface script {
-	asm: string;
-	desc?: string;
-	hex?: string;
-	type: string;
-	address?: string;
-}
-```
-</td>
-<td>
-
-```ts
 interface script {
 	asm: string;
 	desc?: string;
@@ -266,6 +228,7 @@ interface script {
 ```
 </td>
 </tr>
+</tbody>
 </table>
 
 **HONORABLE MENTION**
