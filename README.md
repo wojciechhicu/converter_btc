@@ -18,7 +18,9 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 
 ⚠️ **Work in Progress**: This application is currently under development. While every effort is made to ensure its functionality and reliability, please note that it may contain bugs or incomplete features. Use at your own discretion.
 
-## WARNING: Tested only in the Windows environment till block height 300.000
+## WARNING: 
+
+Tested only in the Windows environment till block height 300.000
 
 ## DOCUMENTATION
 
@@ -89,8 +91,8 @@ The application can be used in two ways:
 ## INTERFACES
 To make smaller blockchain in MongoDB some of the data is not included / changed as followed:
 
-<table align="center" width="100%">
-<tbody width="100%">
+<table align="center">
+<tbody>
 <tr>
 <th align="center">
 <p>
@@ -108,7 +110,7 @@ MongoDB
 </th>
 </tr>
 <tr>
-<td>
+<td valign="top">
 
 ```ts
 interface RpcBlock {
@@ -170,7 +172,7 @@ interface script {
 }
 ```
 </td>
-<td>
+<td valign="top">
 
 ```ts
 interface BlockHead {
