@@ -18,6 +18,8 @@ This application is written in TypeScript for Node.js. It serves the purpose of 
 
 ⚠️ **Work in Progress**: This application is currently under development. While every effort is made to ensure its functionality and reliability, please note that it may contain bugs or incomplete features. Use at your own discretion.
 
+**WARNING**: Tested only in the Windows environment till block height 300.000
+
 ## Documentation
 
 📚 **Code Documentation**: As of now, all documentation is embedded within the codebase, providing insights into each function and its usage.
@@ -44,7 +46,7 @@ type: "mongodb",
 host: "127.0.0.1",
 port: 27017,
 database: "bitcoin",
-collections: 
+collections:
         {
 		blocks: "blocks",
 		addresses: "addresses",
@@ -55,9 +57,111 @@ collections:
 - **Node.js Environment**: Node.js environment is required for running the application (v16+).
 
 ## Installation
+
 In root folder run:
+
 ```bash
-npm install 
+npm install
 #It will install all needed dependencies
 ```
-**WARNING**: Tested only in the Windows environment
+
+**USAGE**
+Before running the application, make sure to configure the necessary credentials and URLs. All relevant information for logging in and creating URLs can be found in the `env.ts` file located in the `root_folder/src/env.ts`.
+
+The application can be used in two ways:
+
+1. [**Node.js Application**](#as-nodejs-app): Run the application using Node.js.
+2. [**Windows Service**](#as-service): Alternatively, it can be registered as a service in a Windows system.
+
+### As Node.js App:
+
+        * Run `npm run build` in root folder. It's gonna start app as Node.js app. To shut down the applications in a safe way, type stop in the console. To exit from app type `ctrl + c`
+
+### As service:
+
+        * Run `npm run compile` in root folder to compile all files from TS to JS.
+        * Run `cd dist/utils` to change folder to service files.
+        * Run `node service-register.js`. This run service. To stop service write `stop` in the console. To exit from app type `ctrl + c`
+
+## Output Description
+To make smaller blockchain in MongoDB some of the data is not included / changed:
+
+- Data from BTC RPC format: 
+| RPC Data | Data for MongoDB |
+|----------|------------------|
+| RpcBlock {
+	hash: string;
+	confirmations: number;
+	height: number;
+	version: number;
+	versionHex: string;
+	merkleroot: string;
+	time: number;
+	mediantime: number;
+	nonce: number;
+	bits: string;
+	difficulty: number;
+	chainwork: string;
+	previousblockhash: string;
+	strippedsize: number;
+	size: number;
+	nTx: number;
+	nextblockhash: string;
+	weight: number;
+	tx: RpcTX[];
+}| BlockHead {
+	hash: string;
+	height: number;
+	version: number;
+	versionHex: string;
+	merkleroot: string;
+	time: number;
+	nonce: number;
+	bits: string;
+	difficulty: number;
+	previousblockhash: string;
+	strippedsize: number;
+	size: number;
+	weight: number;
+}|
+interface RpcTX {
+        txid: string;
+        hash: string;
+	version: number;
+	size: number;
+	vsize: number;
+	weight: number;
+	locktime: number;
+	vin: vin[];
+	vout: vout[];
+        fee?: number;
+        hex: string;
+}
+interface vin {
+	coinbase?: string;
+	sequence: number;
+	txid?: string;
+        vout?: number;
+        scriptSig?: ScriptSig;
+}
+interface ScriptSig {
+        asm: string;
+        hex: string;
+}
+interface vout {
+	value: number;
+	n: number;
+	scriptPubKey: script;
+}
+interface script {
+	asm: string;
+	desc?: string;
+	hex?: string;
+	type: string;
+	address?: string;
+}
+```
+**HONORABLE MENTION**
+This project owes a debt of gratitude to another project that significantly eased its development.
+
+- **[ProjectName](https://github.com/bitcoinjs/bitcoinjs-lib)**: It would be much harder to implement some of the functionallity witchout this library.
